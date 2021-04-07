@@ -6,7 +6,8 @@ import App from '../src/App';
 
 describe('App root test', () => {
   test('test app', () => {
-    const { getByRole } = render(<App />);
-    expect(getByRole('button')).toHaveTextContent('0');
+    render(<App />);
+    const appDom = document.querySelector('.App');
+    expect(appDom).toHaveClass('App');
   });
 });
