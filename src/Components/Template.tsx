@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { createUseStyles } from 'react-jss';
-import { Button } from '@material-ui/core';
+import { Button, TextField } from '@material-ui/core';
 import TextWidget from './TextWidget';
 import TemplateController from './TemplateContoller';
+import { getRandomKey } from '../utils';
 
 const useStyles = createUseStyles({
   container: {
@@ -59,7 +60,7 @@ export default () => {
       fontWeight: '500',
     };
     const defaultProps = {
-      id: '123456',
+      key: getRandomKey(),
       title: '',
       styles,
     };
@@ -77,8 +78,8 @@ export default () => {
           />
         ) : null}
         {widgets.map((widget) => {
-          const { title, id } = widget;
-          return <TextWidget title={title} key={id} />;
+          const { title, key } = widget;
+          return <TextWidget title={title} key={key} />;
         })}
       </div>
 
@@ -89,15 +90,32 @@ export default () => {
         handleHeightChange={handleHeightChange}
         handleBgChange={handleBgChange}
       />
-      <Button
-        data-testid="textWidgetAdd"
-        onClick={handleWidgetAdd}
-        variant="contained"
-        color="primary"
-        component="span"
-      >
-        添加文字组件
-      </Button>
+      <div className="text-widgets-controller">
+        <Button
+          data-testid="textWidgetAdd"
+          onClick={handleWidgetAdd}
+          variant="contained"
+          color="primary"
+          component="span"
+        >
+          添加文字组件
+        </Button>
+        <div>
+          {widgets.map((widget) => {
+            const { key, title, styles } = widget;
+            return (
+              <div key={key}>
+                <TextField label="标题" value={title} />
+                <TextField label="x" value={styles.left} />
+                <TextField label="y" value={styles.top} />
+                <TextField label="字号" value={styles.fontSize} />
+                <TextField label="字重" value={styles.fontWeight} />
+                <TextField label="颜色" value={styles.color} />
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 };
