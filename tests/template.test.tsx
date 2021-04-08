@@ -1,5 +1,11 @@
 import React from 'react';
-import { render, fireEvent, waitFor, screen } from '@testing-library/react';
+import {
+  render,
+  fireEvent,
+  waitFor,
+  screen,
+  getByTitle,
+} from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
 import Template from '../src/Components/Template';
@@ -33,8 +39,8 @@ describe('test template component', () => {
   });
 
   test('template should has input to upload image', async () => {
-    const { getByTestId, getByRole } = render(<Template />);
-    const inputBtn = getByRole('button');
+    const { getByTestId } = render(<Template />);
+    const inputBtn = getByTestId('bgChange');
     fireEvent.click(inputBtn);
     expect(getByTestId('template-bg')).toHaveProperty('type', 'file');
   });
@@ -48,5 +54,12 @@ describe('test template component', () => {
     const bgImg = getByAltText('template-bg-img') as HTMLImageElement;
     expect(bgImg.src).toMatchSnapshot('(⌐□_□)');
     expect(bgImg).toHaveStyle({ width: '100%', height: '100%' });
+  });
+
+  test('template should has a btn to add text widget', async () => {
+    const { getByTestId, getByText } = render(<Template />);
+    const TextWidgetAddBtn = getByTestId('textWidgetAdd');
+    fireEvent.click(TextWidgetAddBtn);
+    expect(getByText('占位文字')).toBeInTheDocument();
   });
 });

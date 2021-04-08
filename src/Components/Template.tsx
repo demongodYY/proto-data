@@ -1,47 +1,44 @@
 import React, { useState } from 'react';
 import { createUseStyles } from 'react-jss';
-import { InputLabel, Button, TextField } from '@material-ui/core';
+import { Button } from '@material-ui/core';
+import TextWidget from './TextWidget';
+import TemplateController from './TemplateContoller';
+
+const useStyles = createUseStyles({
+  container: {
+    display: 'flex',
+    alignItems: 'flex-start',
+  },
+  template: {
+    width: (props: any) => props.width,
+    height: (props: any) => props.height,
+    backgroundColor: '#dddddd',
+    position: 'relative',
+  },
+  bgImg: {
+    width: '100%',
+    height: '100%',
+  },
+});
 
 export default () => {
   const [templateWidth, setWidth] = useState(300);
   const [templateHeight, setHeight] = useState(500);
   const [templateBg, setBg] = useState('');
+  const [widgets, setWidgets] = useState([] as any[]);
 
-  const useStyles = createUseStyles({
-    container: {
-      width: (props: any) => props.width,
-      height: (props: any) => props.height,
-      backgroundColor: '#dddddd',
-      position: 'relative',
-    },
-    fileInput: {
-      display: 'none',
-    },
-    bgImg: {
-      width: '100%',
-      height: '100%',
-    },
-    controller: {
-      position: 'absolute',
-      right: '-200px',
-      top: '0',
-      display: 'flex',
-      flexDirection: 'column',
-    },
-  });
   const templateProps: any = { width: templateWidth, height: templateHeight };
 
   const classes = useStyles(templateProps);
 
-  const handleWidthChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+  const handleWidthChange: React.ChangeEventHandler<HTMLInputElement> = (evt) =>
     setWidth(Number(evt.target.value));
-  };
 
-  const handleHeightChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    setHeight(Number(evt.target.value));
-  };
+  const handleHeightChange: React.ChangeEventHandler<HTMLInputElement> = (
+    evt
+  ) => setHeight(Number(evt.target.value));
 
-  const handleBgChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+  const handleBgChange: React.ChangeEventHandler<HTMLInputElement> = (evt) => {
     const reader = new FileReader();
     reader.addEventListener(
       'load',
@@ -53,40 +50,54 @@ export default () => {
     }
   };
 
+  const handleWidgetAdd = () => {
+    const styles = {
+      top: '0px',
+      left: '0px',
+      fontSize: '16px',
+      color: '#333333',
+      fontWeight: '500',
+    };
+    const defaultProps = {
+      id: '123456',
+      title: '',
+      styles,
+    };
+    setWidgets([...widgets, defaultProps]);
+  };
+
   return (
-    <div className={classes.container} data-testid="template">
-      {templateBg ? (
-        <img className={classes.bgImg} src={templateBg} alt="template-bg-img" />
-      ) : null}
-      <div className={classes.controller}>
-        <TextField
-          label="宽度"
-          type="number"
-          id="template-width"
-          value={templateWidth}
-          onChange={handleWidthChange}
-        />
-        <TextField
-          label="高度"
-          type="number"
-          id="template-height"
-          value={templateHeight}
-          onChange={handleHeightChange}
-        />
-        <InputLabel htmlFor="template-bg">
-          <Button variant="contained" color="primary" component="span">
-            上传背景
-          </Button>
-          <input
-            className={classes.fileInput}
-            type="file"
-            id="template-bg"
-            data-testid="template-bg"
-            accept="image/*"
-            onChange={handleBgChange}
+    <div className={classes.container}>
+      <div className={classes.template} data-testid="template">
+        {templateBg ? (
+          <img
+            className={classes.bgImg}
+            src={templateBg}
+            alt="template-bg-img"
           />
-        </InputLabel>
+        ) : null}
+        {widgets.map((widget) => {
+          const { title, id } = widget;
+          return <TextWidget title={title} key={id} />;
+        })}
       </div>
+
+      <TemplateController
+        templateWidth={templateWidth}
+        templateHeight={templateHeight}
+        handleWidthChange={handleWidthChange}
+        handleHeightChange={handleHeightChange}
+        handleBgChange={handleBgChange}
+      />
+      <Button
+        data-testid="textWidgetAdd"
+        onClick={handleWidgetAdd}
+        variant="contained"
+        color="primary"
+        component="span"
+      >
+        添加文字组件
+      </Button>
     </div>
   );
 };
