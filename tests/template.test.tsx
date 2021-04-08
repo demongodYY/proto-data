@@ -33,11 +33,20 @@ describe('test template component', () => {
   });
 
   test('template should has input to upload image', async () => {
-    const { getByTestId } = render(<Template />);
+    const { getByTestId, getByRole } = render(<Template />);
+    const inputBtn = getByRole('button');
+    fireEvent.click(inputBtn);
     expect(getByTestId('template-bg')).toHaveProperty('type', 'file');
   });
 
   test('template should change background image when input value change', async () => {
-    const { getByTestId } = render(<Template />);
+    const { getByTestId, getByAltText } = render(<Template />);
+    const file = new File(['(⌐□_□)'], 'chucknorris.png', { type: 'image/png' });
+    const imageInput = getByTestId('template-bg');
+    fireEvent.change(imageInput, { target: { files: [file] } });
+    await waitFor(() => getByAltText('template-bg-img'));
+    const bgImg = getByAltText('template-bg-img') as HTMLImageElement;
+    expect(bgImg.src).toMatchSnapshot('(⌐□_□)');
+    expect(bgImg).toHaveStyle({ width: '100%', height: '100%' });
   });
 });
