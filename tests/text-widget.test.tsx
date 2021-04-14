@@ -4,17 +4,17 @@ import '@testing-library/jest-dom/extend-expect';
 import TextWidget from '../src/Components/TextWidget';
 
 describe('text widget test', () => {
-  test('widget should has a title', () => {
+  it('widget should has a title', () => {
     const { getByTitle } = render(<TextWidget title="testTitle" styles={{}} />);
     expect(getByTitle('testTitle')).toBeInTheDocument();
   });
 
-  test('widget should be absolute position', () => {
+  it('widget should be absolute position', () => {
     const { getByTitle } = render(<TextWidget title="testTitle" styles={{}} />);
     expect(getByTitle('testTitle')).toHaveStyle({ position: 'absolute' });
   });
 
-  test('widget should change style when props change', () => {
+  it('widget should change style when props change', () => {
     const styles = {
       top: '100px',
       left: '50px',
@@ -28,7 +28,7 @@ describe('text widget test', () => {
     expect(getByTitle('testTitle')).toHaveStyle(styles);
   });
 
-  test('widget should have a placeholder', () => {
+  it('widget should have a placeholder', () => {
     const { getByTitle } = render(
       <TextWidget title="testTitle" styles={{}} placeholder="测试" />
     );

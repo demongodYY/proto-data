@@ -5,7 +5,7 @@ import '@testing-library/jest-dom/extend-expect';
 import App from '../src/App';
 
 describe('App root test', () => {
-  test('test app', () => {
+  it('test app', () => {
     render(<App />);
     const appDom = document.querySelector('.App');
     expect(appDom).toHaveClass('App');

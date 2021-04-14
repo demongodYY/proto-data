@@ -11,7 +11,7 @@ import '@testing-library/jest-dom/extend-expect';
 import Template from '../src/Components/Template';
 
 describe('test template component', () => {
-  test('template should be exist', () => {
+  it('template should be exist', () => {
     const { getByTestId } = render(<Template />);
     expect(getByTestId('template')).toHaveStyle({
       width: '300px',
@@ -20,13 +20,13 @@ describe('test template component', () => {
     });
   });
 
-  test('template should has two input to change style', () => {
+  it('template should has two input to change style', () => {
     const { getByLabelText } = render(<Template />);
     expect(getByLabelText('宽度')).toHaveValue(300);
     expect(getByLabelText('高度')).toHaveValue(500);
   });
 
-  test('template should change style when input value change', async () => {
+  it('template should change style when input value change', async () => {
     const { getByLabelText, getByTestId } = render(<Template />);
     const widthInput = getByLabelText('宽度');
     const heightInput = getByLabelText('高度');
@@ -38,14 +38,14 @@ describe('test template component', () => {
     });
   });
 
-  test('template should has input to upload image', async () => {
+  it('template should has input to upload image', async () => {
     const { getByTestId } = render(<Template />);
     const inputBtn = getByTestId('bgChange');
     fireEvent.click(inputBtn);
     expect(getByTestId('template-bg')).toHaveProperty('type', 'file');
   });
 
-  test('template should change background image when input value change', async () => {
+  it('template should change background image when input value change', async () => {
     const { getByTestId, getByAltText } = render(<Template />);
     const file = new File(['(⌐□_□)'], 'chucknorris.png', { type: 'image/png' });
     const imageInput = getByTestId('template-bg');
@@ -56,7 +56,7 @@ describe('test template component', () => {
     expect(bgImg).toHaveStyle({ width: '100%', height: '100%' });
   });
 
-  test('template should has a btn to add text widget', async () => {
+  it('template should has a btn to add text widget', async () => {
     const { getByTestId, getByText } = render(<Template />);
     const TextWidgetAddBtn = getByTestId('textWidgetAdd');
     fireEvent.click(TextWidgetAddBtn);
