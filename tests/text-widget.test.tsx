@@ -29,9 +29,7 @@ describe('text widget test', () => {
   });
 
   it('widget should have a placeholder', () => {
-    const { getByTitle } = render(
-      <TextWidget title="testTitle" styles={{}} placeholder="测试" />
-    );
-    expect(getByTitle('testTitle')).toHaveTextContent('测试');
+    const { getByTitle } = render(<TextWidget title="testTitle" styles={{}} />);
+    expect(getByTitle('testTitle')).toHaveTextContent('testTitle');
   });
 });

@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, ChangeEventHandler } from 'react';
 import { createUseStyles } from 'react-jss';
-import { Button, TextField } from '@material-ui/core';
-import TextWidget from './TextWidget';
+import { Button } from '@material-ui/core';
+import TextWidget, { ITextWidget } from './TextWidget';
 import TemplateController from './TemplateContoller';
-import { getRandomKey } from '../utils';
+import TextWidgetField from './TextWidgetField';
+import { replaceArrayElementByKey, getDefaultTextWidgetProps } from '../utils';
 
 const useStyles = createUseStyles({
   container: {
@@ -26,45 +27,31 @@ export default () => {
   const [templateWidth, setWidth] = useState(300);
   const [templateHeight, setHeight] = useState(500);
   const [templateBg, setBg] = useState('');
-  const [widgets, setWidgets] = useState([] as any[]);
+  const [widgets, setWidgets] = useState([] as ITextWidget[]);
 
-  const templateProps: any = { width: templateWidth, height: templateHeight };
+  const templateProps = { width: templateWidth, height: templateHeight };
 
   const classes = useStyles(templateProps);
 
-  const handleWidthChange: React.ChangeEventHandler<HTMLInputElement> = (evt) =>
+  const handleWidthChange: ChangeEventHandler<HTMLInputElement> = (evt) =>
     setWidth(Number(evt.target.value));
 
-  const handleHeightChange: React.ChangeEventHandler<HTMLInputElement> = (
-    evt
-  ) => setHeight(Number(evt.target.value));
+  const handleHeightChange: ChangeEventHandler<HTMLInputElement> = (evt) =>
+    setHeight(Number(evt.target.value));
 
-  const handleBgChange: React.ChangeEventHandler<HTMLInputElement> = (evt) => {
+  const handleBgChange: ChangeEventHandler<HTMLInputElement> = (evt) => {
     const reader = new FileReader();
-    reader.addEventListener(
-      'load',
-      () => setBg(reader.result as string),
-      false
-    );
-    if (evt.target.files) {
-      reader.readAsDataURL(evt.target.files[0]);
-    }
+    reader.onload = () => setBg(reader.result as string);
+    if (evt.target.files) reader.readAsDataURL(evt.target.files[0]);
   };
 
   const handleWidgetAdd = () => {
-    const styles = {
-      top: '0px',
-      left: '0px',
-      fontSize: '16px',
-      color: '#333333',
-      fontWeight: '500',
-    };
-    const defaultProps = {
-      key: getRandomKey(),
-      title: '',
-      styles,
-    };
-    setWidgets([...widgets, defaultProps]);
+    setWidgets([...widgets, getDefaultTextWidgetProps()]);
+  };
+
+  const handleFieldChange = (newWidget: ITextWidget) => {
+    const newWidgets = replaceArrayElementByKey(widgets, newWidget);
+    setWidgets(newWidgets);
   };
 
   return (
@@ -78,8 +65,8 @@ export default () => {
           />
         ) : null}
         {widgets.map((widget) => {
-          const { title, key } = widget;
-          return <TextWidget title={title} key={key} />;
+          const { title, key, styles } = widget;
+          return <TextWidget title={title} key={key} styles={styles} />;
         })}
       </div>
 
@@ -100,21 +87,13 @@ export default () => {
         >
           添加文字组件
         </Button>
-        <div>
-          {widgets.map((widget) => {
-            const { key, title, styles } = widget;
-            return (
-              <div key={key}>
-                <TextField label="标题" value={title} />
-                <TextField label="x" value={styles.left} />
-                <TextField label="y" value={styles.top} />
-                <TextField label="字号" value={styles.fontSize} />
-                <TextField label="字重" value={styles.fontWeight} />
-                <TextField label="颜色" value={styles.color} />
-              </div>
-            );
-          })}
-        </div>
+        {widgets.map((widget) => (
+          <TextWidgetField
+            key={widget.key}
+            widget={widget}
+            handleFieldChange={handleFieldChange}
+          />
+        ))}
       </div>
     </div>
   );

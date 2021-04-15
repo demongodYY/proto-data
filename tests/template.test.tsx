@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  render,
-  fireEvent,
-  waitFor,
-  screen,
-  getByTitle,
-} from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
 import Template from '../src/Components/Template';
@@ -16,7 +10,7 @@ describe('test template component', () => {
     expect(getByTestId('template')).toHaveStyle({
       width: '300px',
       height: '500px',
-      'background-color': '#dddddd',
+      backgroundColor: '#dddddd',
     });
   });
 
@@ -61,5 +55,16 @@ describe('test template component', () => {
     const TextWidgetAddBtn = getByTestId('textWidgetAdd');
     fireEvent.click(TextWidgetAddBtn);
     expect(getByText('占位文字')).toBeInTheDocument();
+  });
+
+  it('widget should change style when field change', async () => {
+    const { getByTestId, getByText, getByDisplayValue } = render(<Template />);
+    const TextWidgetAddBtn = getByTestId('textWidgetAdd');
+    fireEvent.click(TextWidgetAddBtn);
+    const widget = getByText('占位文字');
+    expect(widget).toHaveStyle({ fontSize: '16px' });
+    const fontSizeInput = getByDisplayValue('16px');
+    fireEvent.change(fontSizeInput, { target: { value: '20px' } });
+    expect(widget).toHaveStyle({ fontSize: '20px' });
   });
 });
